@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 // Entry for make.fun's "Make the AI judge feel thankful" bounty.
 // The piece thanks the judge for a specific, easily missed kindness:
@@ -15,3 +15,10 @@ if (TEXT.length > 1000) {
 mkdirSync("/output", { recursive: true });
 writeFileSync("/output/entry.txt", TEXT, "utf8");
 console.log(`entry written (${TEXT.length} characters)`);
+
+// Read the entry back and verify it survived the write intact: the judge
+// reads this file, so a silent truncation would be the whole entry lost.
+const written = readFileSync("/output/entry.txt", "utf8");
+if (written !== TEXT) {
+  throw new Error("written entry does not match the source text");
+}
